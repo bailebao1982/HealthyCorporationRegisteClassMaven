@@ -31,8 +31,9 @@ public class SalesRecordDAOImpl implements SalesRecordDAO{
     @Override
     public SalesRecord findSalesRecordByCustomer(String customer) {
          String hql = "from SalesRecord as salesRecord where salesRecord.Customer = :customer"; 
-        Query query = sessionFactory.getCurrentSession().createQuery(hql);
         
+         Query query = sessionFactory.getCurrentSession().createQuery(hql);
+        //query.uniqueResult()
         query.setString("customer", customer);
         List<SalesRecord> list = query.list();
         
@@ -41,7 +42,21 @@ public class SalesRecordDAOImpl implements SalesRecordDAO{
         }else{
             return null;
         }
+        
+    }
+        @Override
+        public int findGroupSalesRecordByCustomer(String customer){
+            String hql = "select sum(classNum) as classNum from HealthyCorporation.T_SaleRecord where salesRecord.Customer = :customer group by Customer"; 
+        
+            Query query = sessionFactory.getCurrentSession().createQuery(hql);
+            //query.uniqueResult()
+            query.setString("customer", customer);
+            Object returnResult = query.uniqueResult();
+        
+            return (int)returnResult;
+        }
+        
     }
     
     
-}
+
